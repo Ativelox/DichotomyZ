@@ -6,7 +6,3 @@ DichotomyZ, which was inspired by the former Project [Dichotomy](https://github.
 
 **Dichotomy** requires Java 8 and the following libraries:
 - [JDA](https://github.com/DV8FromTheWorld/JDA)
-
-## Setup
-
-For specifics on how to set this application up, check our [Wiki](https://github.com/Ativelox/DichotomyZ/wiki).
