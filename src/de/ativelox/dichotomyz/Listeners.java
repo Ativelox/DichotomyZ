@@ -5,12 +5,12 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
+import de.ativelox.dichotomyz.audio.AudioChatHandler;
 import de.ativelox.dichotomyz.exceptions.UnexpectedGuildSizeException;
 import de.ativelox.dichotomyz.logging.BufferedLogFormatter;
 import de.ativelox.dichotomyz.logging.ELogType;
 import de.ativelox.dichotomyz.settings.SettingsProvider;
 import de.ativelox.dichotomyz.utils.UserUtils;
-import de.ativelox.dichotomzy.audio.AudioChatHandler;
 import net.dv8tion.jda.core.events.ReadyEvent;
 import net.dv8tion.jda.core.events.ShutdownEvent;
 import net.dv8tion.jda.core.events.guild.voice.GenericGuildVoiceEvent;

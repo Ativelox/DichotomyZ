@@ -1,4 +1,4 @@
-package de.ativelox.dichotomzy.audio;
+package de.ativelox.dichotomyz.audio;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -110,7 +110,7 @@ public class AudioChatHandler implements AudioReceiveHandler, AudioSendHandler {
 
     /**
      * Gets 20ms of combined audio as specified by
-     * {@link de.ativelox.dichotomzy.audio.AudioChatHandler#handleCombinedAudio(CombinedAudio)
+     * {@link de.ativelox.dichotomyz.audio.AudioChatHandler#handleCombinedAudio(CombinedAudio)
      * handleCombinedAudio} in the form of bytes. The encoding is specified by
      * {@link net.dv8tion.jda.core.audio.AudioReceiveHandler#OUTPUT_FORMAT
      * OUTPUT_FORMAT}. Using this method until {@link AudioChatHandler#hasNext()
