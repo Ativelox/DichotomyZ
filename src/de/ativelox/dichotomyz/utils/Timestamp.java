@@ -93,9 +93,13 @@ public class Timestamp {
      * @return A formatted string representing the given time.
      */
     public static String msToReadable(final long ms) {
-	final int seconds = Math.round(ms / 1000f);
-	final int minutes = Math.round(ms / (1000f * 60f));
-	final int hours = Math.round(ms / (1000f * 60f * 60f));
+	int hours = (int) Math.floor(ms / (1000f * 60f * 60f));
+	int hoursRemainder = (int) ms % (1000 * 60 * 60);
+
+	int minutes = (int) Math.floor(hoursRemainder / (1000f * 60f));
+	int minutesRemainder = hoursRemainder % (1000 * 60);
+
+	int seconds = (int) Math.floor(minutesRemainder / 1000f);
 
 	return fitStringToLength(String.valueOf(hours), 2) + ":" + fitStringToLength(String.valueOf(minutes), 2) + ":"
 		+ fitStringToLength(String.valueOf(seconds), 2);

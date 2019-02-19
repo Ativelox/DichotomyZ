@@ -6,6 +6,9 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
 import de.ativelox.dichotomyz.audio.AudioChatHandler;
+import de.ativelox.dichotomyz.callbacks.IDayCallback;
+import de.ativelox.dichotomyz.callbacks.IIntervalCallback;
+import de.ativelox.dichotomyz.callbacks.TimeObserver;
 import de.ativelox.dichotomyz.exceptions.UnexpectedGuildSizeException;
 import de.ativelox.dichotomyz.logging.BufferedLogFormatter;
 import de.ativelox.dichotomyz.logging.ELogType;
@@ -30,7 +33,7 @@ import net.dv8tion.jda.core.managers.AudioManager;
  * @author Ativelox {@literal<ativelox.dev@web.de>}
  *
  */
-public class Listeners extends ListenerAdapter {
+public class Listeners extends ListenerAdapter implements IDayCallback {
 
     /**
      * The audio chat handler, used to send and receive audio on this client.
@@ -50,6 +53,12 @@ public class Listeners extends ListenerAdapter {
     private final Bot mClient;
 
     /**
+     * Provides callbacks for implementations for {@link IDayCallback} and
+     * {@link IIntervalCallback}.
+     */
+    private final TimeObserver mTimeObserver;
+
+    /**
      * Creates a new implementation for the {@link ListenerAdapter} which forwards
      * specific events and handles them to create logs of user activity and the
      * like.
@@ -58,6 +67,8 @@ public class Listeners extends ListenerAdapter {
      */
     public Listeners(final Bot client) {
 	mCaf = new AudioChatHandler("unbenannt.raw");
+	mTimeObserver = new TimeObserver();
+	mTimeObserver.add(this);
 
 	mFormatter = new BufferedLogFormatter();
 	mClient = client;
@@ -142,11 +153,14 @@ public class Listeners extends ListenerAdapter {
     @Override
     public void onReady(final ReadyEvent event) {
 	init();
+	new Thread(mTimeObserver).start();
 
     }
 
     @Override
     public void onShutdown(final ShutdownEvent event) {
+	mTimeObserver.stop();
+
 	mFormatter.log();
 
 	// TODO: handle the audio file generation better.
@@ -176,17 +190,36 @@ public class Listeners extends ListenerAdapter {
 
     @Override
     public void onUserUpdateGame(final UserUpdateGameEvent event) {
-	String name = null;
+	String newName = null;
+	String oldName = null;
+
 	if (event.getNewGame() != null) {
-	    name = event.getNewGame().getName();
+	    newName = event.getNewGame().getName();
 
 	}
-	mFormatter.addActivityChange(event.getEntity().getName(), name);
+	if (event.getOldGame() != null) {
+	    oldName = event.getOldGame().getName();
+
+	}
+	mFormatter.addActivityChange(event.getMember().getEffectiveName(), oldName, newName);
+
     }
 
     @Override
     public void onUserUpdateOnlineStatus(final UserUpdateOnlineStatusEvent event) {
-	mFormatter.addStatusChange(event.getEntity().getName(), event.getNewOnlineStatus());
+	mFormatter.addStatusChange(event.getMember().getEffectiveName(), event.getOldOnlineStatus(),
+		event.getNewOnlineStatus());
+
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.ativelox.dichotomyz.callbacks.IDayCallback#onDayPassed()
+     */
+    @Override
+    public void onDayPassed() {
+	// TODO: log everything.
 
     }
 }

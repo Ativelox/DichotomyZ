@@ -4,6 +4,7 @@ import java.util.List;
 
 import de.ativelox.dichotomyz.Bot;
 import de.ativelox.dichotomyz.exceptions.UnexpectedGuildSizeException;
+import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 
@@ -33,5 +34,23 @@ public class UserUtils {
 	}
 	return guilds.get(0).getMembers();
 
+    }
+
+    /**
+     * Gets the name of the current game, or returns <tt>null</tt> if the given game
+     * was <tt>null</tt>.
+     * 
+     * @param game The game for which to fetch its name.
+     * @return The name of the game, or <tt>null</tt> if the given game was
+     *         <tt>null</tt>.
+     */
+    public static String getUniformGameName(final Game game) {
+	String gameName = null;
+
+	if (game != null) {
+	    gameName = game.getName();
+
+	}
+	return gameName;
     }
 }

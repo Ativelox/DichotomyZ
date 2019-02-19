@@ -59,4 +59,40 @@ public final class TimestampedEntry<T> {
 	return mTimestamp;
 
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+	final int prime = 31;
+	int result = 1;
+	result = prime * result + ((mEntry == null) ? 0 : mEntry.hashCode());
+	return result;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+	if (this == obj)
+	    return true;
+	if (obj == null)
+	    return false;
+	if (getClass() != obj.getClass())
+	    return false;
+	@SuppressWarnings("unchecked")
+	TimestampedEntry<T> other = (TimestampedEntry<T>) obj;
+	if (mEntry == null) {
+	    if (other.mEntry != null)
+		return false;
+	} else if (!mEntry.equals(other.mEntry))
+	    return false;
+	return true;
+    }
 }
