@@ -39,18 +39,6 @@ public class BufferedLogFormatter {
     private final Map<String, Map<String, TimestampedEntry<Long>>> mActivityMap;
 
     /**
-     * Holds the current log of all the PMs this client has received, formatted as a
-     * user-friendly string.
-     */
-    private StringBuilder mCurrentPMLog;
-
-    /**
-     * Holds the current log of all the debug messages that occured during runtime,
-     * formatted as a user-friendly string.
-     */
-    private StringBuilder mCurrentDebugLog;
-
-    /**
      * A list of all the members in the guild.
      */
     private List<Member> mMembers;
@@ -61,9 +49,6 @@ public class BufferedLogFormatter {
     public BufferedLogFormatter() {
 	mStatusMap = new HashMap<>();
 	mActivityMap = new HashMap<>();
-
-	mCurrentPMLog = new StringBuilder();
-	mCurrentDebugLog = new StringBuilder();
 
     }
 
@@ -108,27 +93,13 @@ public class BufferedLogFormatter {
     }
 
     /**
-     * Adds a debug log to this buffer.
-     * 
-     * @param type    The type of the debug log, should only be
-     *                {@link ELogType#DEBUG}, {@link ELogType#INFO} or
-     *                {@link ELogType#WARNING}
-     * @param message The message that describes the debug log
+     * Updates the date of the underlying logger, if supported.
      */
-    public void addDebugLog(final ELogType type, final String message) {
-	mCurrentDebugLog.append("[" + type + "] " + message + "\r\n");
-
-    }
-
-    /**
-     * Adds a PM to this buffer.
-     * 
-     * @param name    The name of the author that wrote the PM to this client
-     * @param message The message written.
-     */
-    public void addPMLog(final String name, final String message) {
-	mCurrentPMLog.append("[" + Timestamp.getCurrentTime() + "] " + name + ": " + message + "\r\n");
-
+    public void updateDate() {
+	ILogger logger = Logger.Get();
+	if (logger instanceof CombinedLogger) {
+	    ((CombinedLogger) logger).updateDate();
+	}
     }
 
     /**
@@ -225,8 +196,6 @@ public class BufferedLogFormatter {
 
 	logger.log(ELogType.ACTIVITY, activityLog.toString());
 	logger.log(ELogType.STATUS, statusLog.toString());
-	logger.log(ELogType.DEBUG, mCurrentDebugLog.toString());
-	logger.log(ELogType.PM, mCurrentPMLog.toString());
 
     }
 }

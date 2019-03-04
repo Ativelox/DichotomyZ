@@ -23,7 +23,10 @@ public class Logger {
      */
     public static ILogger Get() {
 	if (INSTANCE == null) {
-	    INSTANCE = new FileLogger(SettingsProvider.getPath());
+	    INSTANCE = new CombinedLogger(
+		    new PMLogger(SettingsProvider.getPMUser(), SettingsProvider.getPMDiscriminator()),
+		    new FTPLogger(SettingsProvider.getPath(), SettingsProvider.getFTPUser(),
+			    SettingsProvider.getFTPPassword(), SettingsProvider.getFTPHost()));
 
 	}
 	return INSTANCE;

@@ -20,7 +20,7 @@ public class Timestamp {
     private final static DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
     /**
-     * The formatter used for time.
+     * The formatter used for time, in the format HH:mm:ss
      */
     private final static DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss");
 

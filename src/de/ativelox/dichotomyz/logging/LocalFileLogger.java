@@ -18,7 +18,7 @@ import de.ativelox.dichotomyz.utils.Timestamp;
  * @author Ativelox {@literal <ativelox.dev@web.de>}
  *
  */
-public class FileLogger implements ILogger {
+public class LocalFileLogger implements ILogger {
 
     /**
      * The date this logger was created.
@@ -42,11 +42,11 @@ public class FileLogger implements ILogger {
     private final String mTopPath;
 
     /**
-     * Creates a new {@link FileLogger}.
+     * Creates a new {@link LocalFileLogger}.
      * 
      * @param topPath The top path for the log files.
      */
-    public FileLogger(final String topPath) {
+    public LocalFileLogger(final String topPath) {
 	mTopPath = topPath;
 	mServiceStartTimestamp = Timestamp.getCurrentDate();
 	mServiceStartTimeTimestamp = Timestamp.getCurrentTime();

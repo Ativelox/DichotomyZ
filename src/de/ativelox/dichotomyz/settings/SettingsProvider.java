@@ -35,6 +35,32 @@ public class SettingsProvider {
     private static final String TOKEN_IDENTIFIER = "token";
 
     /**
+     * The identifier used within the config file to identify the PM user.
+     */
+    private static final String PM_USER_IDENTIFIER = "pmuser";
+
+    /**
+     * The identifier used within the config file to identify the ftp host.
+     */
+    private static final String FTP_HOST_IDENTIFIER = "ftphost";
+
+    /**
+     * The identifier used within the config file to identify the ftp username.
+     */
+    private static final String FTP_USER_IDENTIFIER = "ftpuser";
+
+    /**
+     * The identifier used within the config file to identify the ftp password.
+     */
+    private static final String FTP_PASSWORD_IDENTIFIER = "ftppass";
+
+    /**
+     * The identifier used within the config file to identify the discriminator for
+     * the PM user.
+     */
+    private static final String PM_DISCRIMINATOR_IDENTIFIER = "discriminator";
+
+    /**
      * The identifier used withing the config file to identiy the path setting.
      */
     private static final String LOG_FOLDER = "path";
@@ -111,6 +137,51 @@ public class SettingsProvider {
      */
     public static String getToken() {
 	return get(TOKEN_IDENTIFIER);
+    }
+
+    /**
+     * Gets the user name from the settings file used for the PM logger.
+     * 
+     * @return The user name mentioned.
+     */
+    public static String getPMUser() {
+	return get(PM_USER_IDENTIFIER);
+    }
+
+    /**
+     * Gets the host from the settings file for the ftp service.
+     * 
+     * @return The host mentioned.
+     */
+    public static String getFTPHost() {
+	return get(FTP_HOST_IDENTIFIER);
+    }
+
+    /**
+     * Gets the username used to log into the ftp service.
+     * 
+     * @return The username mentioned.
+     */
+    public static String getFTPUser() {
+	return get(FTP_USER_IDENTIFIER);
+    }
+
+    /**
+     * Gets the password used to log into the ftp service.
+     * 
+     * @return The password mentioned.
+     */
+    public static String getFTPPassword() {
+	return get(FTP_PASSWORD_IDENTIFIER);
+    }
+
+    /**
+     * Gets the discriminator for the user used for PMing.
+     * 
+     * @return The discriminator mentioned.
+     */
+    public static String getPMDiscriminator() {
+	return get(PM_DISCRIMINATOR_IDENTIFIER);
     }
 
     /**

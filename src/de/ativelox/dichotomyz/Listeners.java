@@ -1,10 +1,5 @@
 package de.ativelox.dichotomyz;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
-
 import de.ativelox.dichotomyz.audio.AudioChatHandler;
 import de.ativelox.dichotomyz.callbacks.IDayCallback;
 import de.ativelox.dichotomyz.callbacks.IIntervalCallback;
@@ -12,6 +7,8 @@ import de.ativelox.dichotomyz.callbacks.TimeObserver;
 import de.ativelox.dichotomyz.exceptions.UnexpectedGuildSizeException;
 import de.ativelox.dichotomyz.logging.BufferedLogFormatter;
 import de.ativelox.dichotomyz.logging.ELogType;
+import de.ativelox.dichotomyz.logging.ILogger;
+import de.ativelox.dichotomyz.logging.Logger;
 import de.ativelox.dichotomyz.settings.SettingsProvider;
 import de.ativelox.dichotomyz.utils.UserUtils;
 import net.dv8tion.jda.core.events.ReadyEvent;
@@ -45,7 +42,7 @@ public class Listeners extends ListenerAdapter implements IDayCallback {
      * Every logging call should be made to this instance, since it forwards those
      * to the underlying {@link ILogger}.
      */
-    private final BufferedLogFormatter mFormatter;
+    private BufferedLogFormatter mFormatter;
 
     /**
      * The client this listener operates on.
@@ -84,7 +81,7 @@ public class Listeners extends ListenerAdapter implements IDayCallback {
      *              events.
      */
     public void handleGuildVoiceJoin(final GenericGuildVoiceEvent event) {
-	mFormatter.addDebugLog(ELogType.INFO,
+	Logger.Get().log(ELogType.INFO,
 		event.getMember().getEffectiveName() + " joined " + event.getVoiceState().getChannel().getName());
 
 	if (!event.getMember().getEffectiveName().equals("Ativelox")) {
@@ -106,10 +103,10 @@ public class Listeners extends ListenerAdapter implements IDayCallback {
     private void init() {
 
 	try {
-	    mFormatter.init(UserUtils.getAllUsers(mClient));
+	    mFormatter.init(UserUtils.getAllUsers());
 
 	} catch (final UnexpectedGuildSizeException e) {
-	    mFormatter.addDebugLog(ELogType.WARNING, "Unexpected amount of guilds, might not work as intended");
+	    Logger.Get().log(ELogType.WARNING, "Unexpected amount of guilds, might not work as intended");
 
 	}
     }
@@ -121,10 +118,10 @@ public class Listeners extends ListenerAdapter implements IDayCallback {
 
     @Override
     public void onGuildVoiceLeave(final GuildVoiceLeaveEvent event) {
-	mFormatter.addDebugLog(ELogType.INFO,
+	Logger.Get().log(ELogType.INFO,
 		event.getMember().getEffectiveName() + " left " + event.getChannelLeft().getName());
 
-	if (!event.getMember().getEffectiveName().equals("Ativelox")) {
+	if (!event.getMember().getEffectiveName().equals(SettingsProvider.getPMUser())) {
 	    return;
 	}
 
@@ -141,7 +138,8 @@ public class Listeners extends ListenerAdapter implements IDayCallback {
 
     @Override
     public void onPrivateMessageReceived(final PrivateMessageReceivedEvent event) {
-	mFormatter.addPMLog(event.getAuthor().getName(), event.getMessage().getContentDisplay());
+	Logger.Get().log(ELogType.PM,
+		" " + event.getAuthor().getName() + ": " + event.getMessage().getContentDisplay());
 
 	if (event.getAuthor().getName().equals("Ativelox")
 		&& event.getMessage().getContentDisplay().contains("logout")) {
@@ -152,6 +150,7 @@ public class Listeners extends ListenerAdapter implements IDayCallback {
 
     @Override
     public void onReady(final ReadyEvent event) {
+	UserUtils.init(mClient);
 	init();
 	new Thread(mTimeObserver).start();
 
@@ -162,30 +161,30 @@ public class Listeners extends ListenerAdapter implements IDayCallback {
 	mTimeObserver.stop();
 
 	mFormatter.log();
-
-	// TODO: handle the audio file generation better.
-
-	int size = mCaf.numOfPackages();
-	byte[] sound = new byte[3840 * size];
-
-	int i = 0;
-	while (mCaf.hasNext()) {
-	    byte[] currentPackage = mCaf.get20MsAudio();
-
-	    for (int j = 0; j < currentPackage.length; j++) {
-		sound[i] = currentPackage[j];
-		i++;
-	    }
-
-	}
-
-	try {
-	    Files.write(Paths.get(SettingsProvider.getPath() + ProjectPaths.AUDIO_RECEIVE_PATH + "test.raw"), sound,
-		    StandardOpenOption.CREATE);
-	} catch (IOException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	}
+//
+//	// TODO: handle the audio file generation better.
+//
+//	int size = mCaf.numOfPackages();
+//	byte[] sound = new byte[3840 * size];
+//
+//	int i = 0;
+//	while (mCaf.hasNext()) {
+//	    byte[] currentPackage = mCaf.get20MsAudio();
+//
+//	    for (int j = 0; j < currentPackage.length; j++) {
+//		sound[i] = currentPackage[j];
+//		i++;
+//	    }
+//
+//	}
+//
+//	try {
+//	    Files.write(Paths.get(SettingsProvider.getPath() + ProjectPaths.AUDIO_RECEIVE_PATH + "test.raw"), sound,
+//		    StandardOpenOption.CREATE);
+//	} catch (IOException e) {
+//	    // TODO Auto-generated catch block
+//	    e.printStackTrace();
+//	}
     }
 
     @Override
@@ -219,7 +218,17 @@ public class Listeners extends ListenerAdapter implements IDayCallback {
      */
     @Override
     public void onDayPassed() {
-	// TODO: log everything.
+	mFormatter.log();
+
+	mFormatter = new BufferedLogFormatter();
+	try {
+	    mFormatter.init(UserUtils.getAllUsers());
+
+	} catch (UnexpectedGuildSizeException e) {
+	    Logger.Get().log(ELogType.WARNING, e.getMessage());
+
+	}
+	mFormatter.updateDate();
 
     }
 }
