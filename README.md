@@ -6,3 +6,4 @@ DichotomyZ, which was inspired by the former Project [Dichotomy](https://github.
 
 **Dichotomy** requires Java 8 and the following libraries:
 - [JDA](https://github.com/DV8FromTheWorld/JDA)
+- [ftp4j](http://www.sauronsoftware.it/projects/ftp4j/)
